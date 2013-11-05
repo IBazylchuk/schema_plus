@@ -72,7 +72,7 @@ module SchemaPlus
 
         # Drop the named view
         def drop_materialized_view(view_name)
-          execute "DROP MATERIALIZED VIEW #{quote_table_name(view_name)}"
+          execute "DROP MATERIALIZED VIEW IF EXISTS #{quote_table_name(view_name)}"
         end        
 
 

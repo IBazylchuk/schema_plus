@@ -227,6 +227,29 @@ the above views you can define
     class UncommentedPost < ActiveRecord::Base
     end
 
+### Materialized Views
+
+SchemaPlus provides support for creating and dropping materialized views.  In a migration,
+a materialized view can be created using a rails relation or literal sql:
+
+    create_materialized_view :posts_commented_by_staff,  Post.joins(comment: user).where(users: {role: 'staff'}).uniq
+    create_materialized_view :uncommented_posts,        "SELECT * FROM posts LEFT OUTER JOIN comments ON comments.post_id = posts.id WHERE comments.id IS NULL"
+
+And can be dropped:
+
+    drop_materialized_view :posts_commented_by_staff
+    drop_ materialized_view :uncommented_posts
+
+ActiveRecord works with materialized views the same as with ordinary tables.  That is, for
+the above materialized views you can define
+
+    class PostCommentedByStaff < ActiveRecord::Base
+      table_name = "posts_commented_by_staff"
+    end
+
+    class UncommentedPost < ActiveRecord::Base
+    end
+
 ### Column Defaults: Expressions
 
 SchemaPlus allows defaults to be set using expressions or constant values:
