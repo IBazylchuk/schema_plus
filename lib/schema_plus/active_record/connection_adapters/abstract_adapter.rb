@@ -56,6 +56,25 @@ module SchemaPlus
           execute "DROP VIEW #{quote_table_name(view_name)}"
         end
 
+        # Create a view given the SQL definition.  Specify :force => true
+        # to first drop the view if it already exists.
+        def create_materialized_view(view_name, definition, options={})
+          definition = definition.to_sql if definition.respond_to? :to_sql
+          execute "DROP MATERIALIZED VIEW IF EXISTS #{quote_table_name(view_name)}" if options[:force]
+          execute "CREATE MATERIALIZED VIEW #{quote_table_name(view_name)} AS #{definition}"
+        end
+
+        def alter_materialized_view(view_name, definition, options={})
+          definition = definition.to_sql if definition.respond_to? :to_sql
+          execute "DROP MATERIALIZED VIEW IF EXISTS #{quote_table_name(view_name)}"
+          execute "CREATE MATERIALIZED VIEW #{quote_table_name(view_name)} AS #{definition}"
+        end
+
+        # Drop the named view
+        def drop_materialized_view(view_name)
+          execute "DROP MATERIALIZED VIEW #{quote_table_name(view_name)}"
+        end        
+
 
         # Define a foreign key constraint.  Valid options are :on_update,
         # :on_delete, and :deferrable, with values as described at
